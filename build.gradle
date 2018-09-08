@@ -1,0 +1,48 @@
+apply plugin: 'java'
+
+version = '0.7'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+   manifest {
+        attributes(
+        "Main-Class": "itkach.slobber.Slobber",
+        "Implementation-Title": "Aard 2 Web",
+        "Implementation-Version": version)
+    }
+
+   sourceSets {
+        main {
+            resources {
+                srcDirs = [
+                    'src/'
+                ]
+            }
+        }
+    }
+
+    project.file("exclude.txt").eachLine {
+        line ->
+            println line
+            if (!line.startsWith("#")) {
+                exclude line.trim()
+            }
+    }
+
+}
+
+dependencies {
+    compile project(':slobber')
+ }
